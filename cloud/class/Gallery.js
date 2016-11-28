@@ -184,8 +184,6 @@ function commentGallery(req, res) {
 
 
 function feed(req, res, next) {
-    console.log('hello');
-    return;
     const params = req.params;
     const _page = req.params.page || 1;
     const _limit = req.params.limit || 24;
