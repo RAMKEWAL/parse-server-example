@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "serverURL": "https://panda-parse.herokuapp.com/parse",
+      "appName": "panda-parse",
+      "appId": "appId",
+      "masterKey": "master",
+      "iconName": "icon.png"
+    }
+  ],
+  "iconsFolder": "www/assets/images"
+}
