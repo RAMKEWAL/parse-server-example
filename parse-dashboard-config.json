@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "http://panda-parse.herokuapp.com/parse",
       "appName": "panda-parse",
       "appId": "appId",
       "masterKey": "master",
