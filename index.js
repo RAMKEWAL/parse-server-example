@@ -19,7 +19,7 @@ const api = new ParseServer({
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'appId',
   masterKey: process.env.MASTER_KEY || 'master', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'http://panda-parse.herokuapp.com/parse',  // Don't forget to change to https if needed
+  serverURL: process.env.SERVER_URL || 'https://panda-parse.herokuapp.com/parse',  // Don't forget to change to https if needed
 //  liveQuery: {
 //    classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
 //  }
@@ -29,7 +29,7 @@ const dashboard = new ParseDashboard({
     apps       : [
         {
             appName  : 'panda-parse',
-            serverURL: 'http://panda-parse.herokuapp.com/parse',
+            serverURL: 'https://panda-parse.herokuapp.com/parse',
             appId    : 'appId',
             masterKey: 'master',
             iconName : 'icon.png'
@@ -54,12 +54,14 @@ const port = 1337;
 // Cors
 app.use(cors());
 
+console.log(cors());
+
 // EJS Template
 app.set('view engine', 'ejs');
 app.use(express.static('views'));
 app.use((req, res, next) => {
     res.locals.appId     = 'appId';
-    res.locals.serverUrl = 'http://panda-parse.herokuapp.com/parse';
+    res.locals.serverUrl = 'https://panda-parse.herokuapp.com/parse';
     next();
 });
 
