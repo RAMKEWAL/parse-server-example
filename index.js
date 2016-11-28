@@ -8,14 +8,14 @@ const ParseDashboard = require('parse-dashboard');
 const path           = require('path');
 
 
-const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI || 'mongodb://heroku_nqxgmr02:sfs5os02gd9rt4mfppsci5oiph@ds111798.mlab.com:11798/heroku_nqxgmr02';
+const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI || 'mongodb://heroku_df3n351k:elsfv4vdpusetmheu8rnnuoseb@ds013916.mlab.com:13916/heroku_df3n351k';
 
 if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
 const api = new ParseServer({
-  databaseURI: databaseUri || 'mongodb://heroku_nqxgmr02:sfs5os02gd9rt4mfppsci5oiph@ds111798.mlab.com:11798/heroku_nqxgmr02',
+  databaseURI: databaseUri || 'mongodb://heroku_df3n351k:elsfv4vdpusetmheu8rnnuoseb@ds013916.mlab.com:13916/heroku_df3n351k',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'appId',
   masterKey: process.env.MASTER_KEY || 'master', //Add your master key here. Keep it secret!
