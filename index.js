@@ -1,53 +1,83 @@
 // Example express application adding the parse-server module to expose Parse
 // compatible API routes.
 
-var express = require('express');
-var ParseServer = require('parse-server').ParseServer;
-var path = require('path');
+const express        = require('express');
+const cors           = require('cors');
+const ParseServer    = require('parse-server').ParseServer;
+const ParseDashboard = require('parse-dashboard');
+const path           = require('path');
 
-var databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI || 'mongodb://heroku_g99qc60t:m830qumllqlja6im45dgahceht@ds013206.mlab.com:13206/heroku_g99qc60t';
+
+const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI || 'mongodb://heroku_nqxgmr02:sfs5os02gd9rt4mfppsci5oiph@ds111798.mlab.com:11798/heroku_nqxgmr02';
 
 if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
-var api = new ParseServer({
-  databaseURI: databaseUri || 'mongodb://heroku_g99qc60t:m830qumllqlja6im45dgahceht@ds013206.mlab.com:13206/heroku_g99qc60t',
+const api = new ParseServer({
+  databaseURI: databaseUri || 'mongodb://heroku_nqxgmr02:sfs5os02gd9rt4mfppsci5oiph@ds111798.mlab.com:11798/heroku_nqxgmr02',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'appId',
   masterKey: process.env.MASTER_KEY || 'master', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'http://panda-sphere.herokuapp.com/parse',  // Don't forget to change to https if needed
-  liveQuery: {
-    classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
-  }
+  serverURL: process.env.SERVER_URL || 'http://panda-parse.herokuapp.com/parse',  // Don't forget to change to https if needed
+//  liveQuery: {
+//    classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
+//  }
 });
+
+const dashboard = new ParseDashboard({
+    apps       : [
+        {
+            appName  : 'panda-parse',
+            serverURL: 'http://panda-parse.herokuapp.com/parse',
+            appId    : 'appId',
+            masterKey: 'master',
+            iconName : 'icon.png'
+        }
+    ],
+    users      : [
+        {
+            user: 'admin', // Used to log in to your Parse Dashboard
+            pass: 'admin123'
+        }
+    ],
+    iconsFolder: 'www/assets/images'
+}, true);
+
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
 // If you wish you require them, you can set them as options in the initialization above:
 // javascriptKey, restAPIKey, dotNetKey, clientKey
 
-var app = express();
+const app = express();
+const port = 1337;
 
-// Serve static assets from the /public folder
-app.use('/public', express.static(path.join(__dirname, '/public')));
+// Cors
+app.use(cors());
+
+// EJS Template
+app.set('view engine', 'ejs');
+app.use(express.static('views'));
+app.use((req, res, next) => {
+    res.locals.appId     = 'appId';
+    res.locals.serverUrl = 'http://panda-parse.herokuapp.com/parse';
+    next();
+});
+
+app.get('/', function (req, res) {
+    res.render('index');
+});
 
 // Serve the Parse API on the /parse URL prefix
-var mountPath = process.env.PARSE_MOUNT || '/parse';
+const mountPath = process.env.PARSE_MOUNT || '/parse';
 app.use(mountPath, api);
 
-// Parse Server plays nicely with the rest of your web routes
-app.get('/', function(req, res) {
-  res.status(200).send('I dream of being a website.  Please star the parse-server repo on GitHub!');
-});
 
-// There will be a test page available on the /test path of your server url
-// Remove this before launching your app
-app.get('/test', function(req, res) {
-  res.sendFile(path.join(__dirname, '/public/test.html'));
-});
+// make the Parse Dashboard available at /dashboard
+app.use('/dashboard', dashboard);
 
-var port = process.env.PORT || 1337;
+
 var httpServer = require('http').createServer(app);
-httpServer.listen(port, function() {
+httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
 });
 
